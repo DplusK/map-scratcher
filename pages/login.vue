@@ -24,23 +24,17 @@ export default {
         username: "",
         password: "",
       },
-      //   username: "",
-      //   password: "",
     };
   },
   methods: {
-    // async loginSumbit() {
-    //   await this.$axios.$post("/api/login", {
-    //     username: this.username,
-    //     password: this.password,
-    //   });
-    // },
     async loginSumbit() {
       try {
         let response = await this.$auth.loginWith("local", {
           data: this.login,
+          headers: { "Content-Type": "application/json" },
         });
-        console.log(response);
+        console.log(response.data);
+        console.log(this.$auth.user);
       } catch (err) {
         console.log(err);
       }

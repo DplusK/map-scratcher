@@ -3,56 +3,82 @@ const express = require('express')
 const app = express()
 const flash = require('express-flash')
 const session = require('express-session')
+var passport = require('passport')
 
-
-var Datastore = require('nedb'),
-    db = new Datastore({ filename: 'db/database.db' });
-db.loadDatabase();
-
-var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
+const passportConfig = require('./passport-config.js')
 
 app.use(session({
-    secret: 'process.env.SESSION_SECRET',
-    cookie: { maxAge: 60000 },
+    secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
+    // store: sessionStorage,
+    cookie: { maxAge: 20000 }
 }));
 
 app.use(flash());
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/testing', (req, res) => {
-    res.redirect('/')
+
+app.use((req, res, next) => {
+    console.log(req.session)
+    console.log(req.user)
+    next()
 })
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local')(req, res, next)
+    //     , function (err, user) {
+    //         req.logIn(user, err => {
+    //             if (err) {
+    //                 return res.json({
+    //                     meta: {
+    //                         error: true,
+    //                         msg: err
+    //                     }
+    //                 });
+    //             }
+    //             return res.json({
+    //                 meta: {
+    //                     error: false
+    //                 },
+    //                 user: user
+    //             });
+    //         });
+    //     }
+    // )(req, res, next)
+});
 
-passport.use(new LocalStrategy(
-    function (username, password, done) {
-        db.findOne({ username: username }, function (err, user) {
-            if (err) { console.log('err'); return done(err); }
-            if (!user) {
-                return done(null, false, { message: 'Incorrect username.' });
-            }
-            if (user.password != password) {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-            console.log(user)
-            return done(null, user);
-        });
-    }
-));
-passport.serializeUser((user, done) => { })
-passport.deserializeUser((user, done) => { })
 
-app.post('/login',
-    passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login',
-        failureFlash: false
-    }),
-);
+// app.post('/login',
+//     (req, res) => {
+//         passport.authenticate('local'
+//             , (err, user) => {
+//                 if (err) {
+//                     return res.send({
+//                         meta: {
+//                             error: true,
+//                             msg: err.msg
+//                         }
+//                     });
+//                 }
+//                 if (!user) {
+//                     return res.send({
+//                         meta: {
+//                             error: true,
+//                             msg: "Bad credentials"
+//                         }
+//                     });
+//                 }
+//                 req.session.authUser = user.username
+//                 console.log(req.session)
+//                 return res.send(
+//                     user
+//                 );
+//             })(req, res)
+//     }
+// );
+
 
 module.exports = app
