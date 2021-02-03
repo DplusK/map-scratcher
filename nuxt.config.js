@@ -52,7 +52,7 @@ export default {
           // autoFetch: true
         },
         endpoints: {
-          login: { url: '/api/login', method: 'post' },
+          login: { url: '/api/auth/login', method: 'post' },
           logout: { url: '/api/logout', method: 'post' },
           user: { url: '/api/user', method: 'get' }
         }
@@ -60,7 +60,7 @@ export default {
     }
   },
   router: {
-    middleware: []
+    middleware: ['auth']
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

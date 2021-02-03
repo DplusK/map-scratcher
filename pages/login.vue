@@ -28,10 +28,21 @@ export default {
   },
   methods: {
     async loginSumbit() {
+      // await this.$axios({
+      //   method: "post",
+      //   url: "/login",
+      //   credentials: "same-origin",
+      //   data: {
+      //     username: this.username,
+      //     password: this.password,
+      //   },
+      // }).then((res) => {
+      //   console.log(res);
+      // });
+
       try {
         let response = await this.$auth.loginWith("local", {
           data: this.login,
-          headers: { "Content-Type": "application/json" },
         });
         console.log(response.data);
         console.log(this.$auth.user);
