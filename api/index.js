@@ -2,99 +2,57 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 const flash = require('express-flash')
-const session = require('express-session')
 var passport = require('passport')
 var cors = require('cors')
-
-var NedbStore = require('nedb-session-store')(session);
-
+var controller = require('./controller.js')
 const passportConfig = require('./passport-config.js')
-var store = new NedbStore({
-    filename: 'db/session.db'
-});
-
 app.use(cors())
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    store: store,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 }
-}));
+
 app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 app.use(passport.initialize());
-app.use(passport.session());
+
+app.post('/auth/login', (req, res) => {
+    passport.authenticate('local', { session: false }, (err, user, info) => {
+        if (err) {
+            return res.status(500).send(err)
+        } else if (!user) {
+            return res.status(403).send(info)
+        } else {
+            const token = controller.signUserToken(user)
+            return res.send({ token })
+        }
+    })(req, res)
+});
+
+app.get('/auth/logout', (req, res) => {
+    req.logout();
+    res.send({ message: 'logout' });
+})
 
 
-app.post('/auth/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        console.log(req.session)
-        console.log(req.user)
-        req.logIn(user, function (err) {
-            console.log(req.session)
-            console.log(req.user)
-            if (err) { return next(err); }
-            return res.json({
-                meta: {
-                    error: false
-                },
-                user: user
-            });
-        });
-    })(req, res, next)
-}
-
-    //     , function (err, user) {
-    //         req.logIn(user, err => {
-    //             if (err) {
-    //                 return res.json({
-    //                     meta: {
-    //                         error: true,
-    //                         msg: err
-    //                     }
-    //                 });
-    //             }
-    //             return res.json({
-    //                 meta: {
-    //                     error: false
-    //                 },
-    //                 user: user
-    //             });
-    //         });
-    //     }
-    // )(req, res, next)
+app.get('/auth/user',
+    passport.authenticate('jwt', { session: false }),
+    function (req, res) {
+        console.log('user, inside')
+        res.send(req.user.profile);
+    }
 );
 
-// app.post('/login',
-//     (req, res) => {
-//         passport.authenticate('local'
-//             , (err, user) => {
-//                 if (err) {
-//                     return res.send({
-//                         meta: {
-//                             error: true,
-//                             msg: err.msg
-//                         }
-//                     });
-//                 }
-//                 if (!user) {
-//                     return res.send({
-//                         meta: {
-//                             error: true,
-//                             msg: "Bad credentials"
-//                         }
-//                     });
-//                 }
-//                 req.session.authUser = user.username
-//                 console.log(req.session)
-//                 return res.send(
-//                     user
-//                 );
-//             })(req, res)
-//     }
-// );
 
+app.get('/auth/user', async (req, res) => {
+    passport.authenticate('jwt', { session: false }, (err, user, message) => {
+        if (err) {
+            // you should log it
+            return res.status(400).send(err)
+        } else if (!user) {
+            // you should log it
+            return res.status(403).send({ message })
+        } else {
+            return res.send({ user })
+        }
+    })(res, req)
+})
 
 module.exports = app

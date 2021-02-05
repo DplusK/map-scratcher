@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="loginSumbit">
+    <form v-if="!$auth.user" @submit.prevent="loginSumbit">
       <div>
         <label>Username:</label>
         <input type="text" name="username" v-model="login.username" />
@@ -13,6 +13,8 @@
         <input type="submit" value="Log In" />
       </div>
     </form>
+    <div v-else>Loggin</div>
+    {{ $auth.loggedIn }}
   </div>
 </template>
 
@@ -26,26 +28,20 @@ export default {
       },
     };
   },
+  computed: {
+    isLogin() {
+      return this.$auth.user;
+    },
+  },
   methods: {
     async loginSumbit() {
-      // await this.$axios({
-      //   method: "post",
-      //   url: "/login",
-      //   credentials: "same-origin",
-      //   data: {
-      //     username: this.username,
-      //     password: this.password,
-      //   },
-      // }).then((res) => {
-      //   console.log(res);
-      // });
-
       try {
-        let response = await this.$auth.loginWith("local", {
-          data: this.login,
-        });
-        console.log(response.data);
-        console.log(this.$auth.user);
+        await this.$auth
+          .loginWith("local", {
+            data: this.login,
+          })
+          .then(() => this.$toast.success("success", { duration: 500 }));
+        this.$router.push("/testing");
       } catch (err) {
         console.log(err);
       }

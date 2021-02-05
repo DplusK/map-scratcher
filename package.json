@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxtjs/auth-next": "5.0.0-1611574754.9020f2a",
     "@nuxtjs/axios": "^5.12.5",
+    "@nuxtjs/toast": "^3.3.1",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "core-js": "^3.8.3",
@@ -19,11 +20,13 @@
     "express": "^4.17.1",
     "express-flash": "0.0.2",
     "express-session": "^1.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mapbox-gl": "^2.0.1",
     "nedb": "^1.8.0",
     "nedb-session-store": "^1.1.2",
     "nuxt": "^2.14.12",
     "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {

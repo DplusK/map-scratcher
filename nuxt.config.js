@@ -38,7 +38,20 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxtjs/toast',
   ],
+  toast: {
+    position: 'top-center',
+    register: [ // Register custom toasts
+      {
+        name: 'my-error',
+        message: 'Oops...Something went wrong',
+        options: {
+          type: 'error'
+        }
+      }
+    ]
+  },
   auth: {
     strategies: {
       local: {
@@ -47,20 +60,25 @@ export default {
           // required: true,
           // type: 'Bearer'
         },
+        refreshToken: {
+          property: 'refresh_token',
+          data: 'refresh_token',
+        },
         user: {
           property: 'user',
-          // autoFetch: true
+          // autoFetch: false
         },
         endpoints: {
           login: { url: '/api/auth/login', method: 'post' },
-          logout: { url: '/api/logout', method: 'post' },
-          user: { url: '/api/user', method: 'get' }
+          logout: { url: '/api/auth/logout', method: 'get' },
+          user: false
+          // user: { url: '/api/auth/user', method: 'get', propertyName: false },
         }
       }
     }
   },
   router: {
-    middleware: ['auth']
+    // middleware: ['auth']
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
