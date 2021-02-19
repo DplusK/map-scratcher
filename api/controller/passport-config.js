@@ -2,6 +2,7 @@ var Datastore = require('nedb'),
     User = new Datastore({ filename: 'db/database.db' });
 User.loadDatabase();
 
+const bcrypt = require('bcrypt');
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy;
 
@@ -12,23 +13,24 @@ passport.use(new LocalStrategy(
             if (!user) {
                 return done(null, false, { message: 'Authentication failed' });
             }
-            if (user.password != password) {
-                return done(null, false, { message: 'Authentication failed' });
-            }
-            return done(null, user);
+            bcrypt.compare(password, user.password, (err, result) => {
+                if (!result) return done(null, false, { message: 'Authentication failed' });
+                else return done(null, user);
+            })
+            // if (user.password != password) {
+            //     return done(null, false, { message: 'Authentication failed' });
+            // }
+            // return done(null, user);
         })
     }
 ));
 
 passport.serializeUser(function (user, done) {
-    console.log('serialize ueser')
     done(null, user._id);
 });
 
 passport.deserializeUser(function (_id, done) {
-    console.log(req)
     db.findOne({ _id: _id }, function (err, user) {
-        console.log('found user in database')
         done(err, user);
     })
 });

@@ -4,14 +4,16 @@ const app = express()
 const flash = require('express-flash')
 var passport = require('passport')
 var cors = require('cors')
-var controller = require('./controller.js')
-const passportConfig = require('./passport-config.js')
-app.use(cors())
+var controller = require('./controller/controller.js')
+const passportConfig = require('./controller/passport-config.js')
 
+app.use(cors())
 app.use(flash());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 app.use(passport.initialize());
+
+app.post('/register', controller.register)
 
 app.post('/auth/login', (req, res) => {
     passport.authenticate('local', { session: false }, (err, user, info) => {
@@ -35,7 +37,6 @@ app.get('/auth/logout', (req, res) => {
 app.get('/auth/user',
     passport.authenticate('jwt', { session: false }),
     function (req, res) {
-        console.log('user, inside')
         res.send(req.user.profile);
     }
 );

@@ -1,11 +1,24 @@
 <template>
-  <h1>Homepage</h1>
+  <div class="text-center">
+    <h1>Homepage</h1>
+    <UserForm title="Register" :formFunction="registerSumbit" />
+  </div>
 </template>
 
 <script>
 export default {
-  mounted() {
-    console.log(this.$auth.user);
+  methods: {
+    async registerSumbit(login) {
+      try {
+        await this.$axios.$post("api/register", { data: login }).then((res) => {
+          if (res.status == "success")
+            this.$toast.success(res.message, { duration: 1000 });
+          else this.$toast.error(res.message, { duration: 1000 });
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
   },
 };
 </script>

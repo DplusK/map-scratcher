@@ -1,48 +1,22 @@
 <template>
-  <div>
-    <form v-if="!$auth.user" @submit.prevent="loginSumbit">
-      <div>
-        <label>Username:</label>
-        <input type="text" name="username" v-model="login.username" />
-      </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" name="password" v-model="login.password" />
-      </div>
-      <div>
-        <input type="submit" value="Log In" />
-      </div>
-    </form>
-    <div v-else>Loggin</div>
-    {{ $auth.loggedIn }}
-  </div>
+  <UserForm title="Login" :formFunction="loginSumbit" class="text-center" />
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      login: {
-        username: "",
-        password: "",
-      },
-    };
-  },
-  computed: {
-    isLogin() {
-      return this.$auth.user;
-    },
-  },
   methods: {
-    async loginSumbit() {
+    async loginSumbit(login) {
       try {
         await this.$auth
           .loginWith("local", {
-            data: this.login,
+            data: login,
           })
-          .then(() => this.$toast.success("success", { duration: 500 }));
+          .then(() => this.$toast.success("success", { duration: 1000 }));
         this.$router.push("/testing");
       } catch (err) {
+        if (err.response.status === 403) {
+          this.$toast.error("Login Fail, Please try again", { duration: 1000 });
+        }
         console.log(err);
       }
     },
