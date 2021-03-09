@@ -15,7 +15,16 @@ app.use(passport.initialize());
 
 app.post('/register', controller.register)
 
-app.post('/auth/login', (req, res) => {
+
+// app.post('/profile', passport.authenticate('jwt', { session: false }),
+//     function (req, res) {
+//         console.log('profile')
+//         res.send(req.user.profile);
+//     }
+// );
+
+
+app.post('/login', (req, res) => {
     passport.authenticate('local', { session: false }, (err, user, info) => {
         if (err) {
             return res.status(500).send(err)
@@ -28,22 +37,16 @@ app.post('/auth/login', (req, res) => {
     })(req, res)
 });
 
+app.post('/auth/data', controller.data)
+
 app.get('/auth/logout', (req, res) => {
     req.logout();
     res.send({ message: 'logout' });
 })
 
-
-app.get('/auth/user',
-    passport.authenticate('jwt', { session: false }),
-    function (req, res) {
-        res.send(req.user.profile);
-    }
-);
-
-
-app.get('/auth/user', async (req, res) => {
+app.get('/auth/user', (req, res) => {
     passport.authenticate('jwt', { session: false }, (err, user, message) => {
+        console.log(req.user)
         if (err) {
             // you should log it
             return res.status(400).send(err)

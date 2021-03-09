@@ -14,10 +14,14 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-
+  env: {
+    MAPBOX_API: process.env.MAPBOX_API
+  },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '@/assets/main.scss'
+    '@/assets/css/main.scss',
+    '@/assets/css/mapbox-gl.css',
+    '@/assets/js/mapbox-gl.js',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -60,7 +64,7 @@ export default {
         token: {
           property: 'token',
           // required: true,
-          // type: 'Bearer'
+          type: 'Bearer'
         },
         refreshToken: {
           property: 'refresh_token',
@@ -71,7 +75,8 @@ export default {
           // autoFetch: false
         },
         endpoints: {
-          login: { url: '/api/auth/login', method: 'post' },
+          login: { url: '/api/login', method: 'post' },
+          // login: { url: '/api/profile', method: 'post' },
           logout: { url: '/api/auth/logout', method: 'get' },
           user: false
           // user: { url: '/api/auth/user', method: 'get', propertyName: false },

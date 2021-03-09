@@ -1,26 +1,13 @@
 <template>
-  <div class="text-center">
-    <h1>Homepage</h1>
-    <UserForm title="Register" :formFunction="registerSumbit" />
+  <div class="min-h-screen w-screen flex items-center justify-center">
+    <div class="container">
+      <p>Index</p>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  methods: {
-    async registerSumbit(login) {
-      try {
-        await this.$axios.$post("api/register", { data: login }).then((res) => {
-          if (res.status == "success")
-            this.$toast.success(res.message, { duration: 1000 });
-          else this.$toast.error(res.message, { duration: 1000 });
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-  },
-};
+export default {};
 </script>
 
 <style>

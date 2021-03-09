@@ -5,8 +5,17 @@ module.exports = {
   },
   purge: [],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        'max': 'max-content'
+      },
+      height: {
+        '500': '500px'
+      },
+    },
   },
-  variants: {},
+  variants: {
+    borderColor: ['focus'],
+  },
   plugins: [],
 }

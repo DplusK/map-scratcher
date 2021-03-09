@@ -1,9 +1,5 @@
 <template>
-  <div class="min-h-screen w-screen flex items-center justify-center">
-    <div class="container">
-      <UserForm title="Login" :formFunction="loginSumbit" class="text-center" />
-    </div>
-  </div>
+  <UserForm title="Login" :formFunction="loginSumbit" class="text-center" />
 </template>
 
 <script>

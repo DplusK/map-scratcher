@@ -27,3 +27,13 @@ module.exports.register = (req, res) => {
         res.send({ status: 'success', message: 'Register Successfully' })
     })
 }
+
+module.exports.data = (req, res) => {
+    console.log('data')
+    var data = req.body.data
+    if (req.isAuthenticated()) {
+        res.send({ message: data });
+    } else {
+        res.send({ message: 'logout' });
+    }
+}

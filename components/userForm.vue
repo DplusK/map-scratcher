@@ -3,8 +3,9 @@
     <h2 class="text-lg font-bold">{{ title }}</h2>
     <form @submit.prevent="formFunction(login)">
       <div :class="{ 'form-group--error': $v.login.username.$anyError }">
-        <label>Username:</label>
+        <label class="hover:text-red-600">Username:</label>
         <input
+          class="border ring ring-blue border-gray-700 mt-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent;"
           type="text"
           name="username"
           v-model.trim="login.username"
@@ -17,6 +18,7 @@
       <div :class="{ 'form-group--error': $v.login.password.$anyError }">
         <label>Password:</label>
         <input
+          class="border border-black mt-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent;"
           type="password"
           v-model.trim="login.password"
           @input="$v.login.password.$touch"
@@ -78,13 +80,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-input {
-  @apply border border-black mt-2 rounded-lg;
-}
+// input {
+//   @apply border border-black mt-2 rounded-lg;
+// }
 .error {
   @apply hidden;
 }
 .form-group--error + .error {
   @apply block text-red-600 text-sm;
 }
+// input {
+//   @apply focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent;
+// }
 </style>
